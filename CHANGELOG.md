@@ -10,9 +10,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [0.0.1] - 2024-10-12
 
-- 基础功能增加
-- 实现右键文件查看文件属性
-- 实现svg图右键预览功能
-- 实现部分代码不全，如vue3，可导入默认结构。使用b-可生成bin-ui组件
-- 扩展js组件函数补全，使用bm-、bn-、blog- 可生成对应message，notice以及log内容
-- 扩展快捷键，alt+shift+l，可进行快速打印 `console.log('${prefix} ========>', ${prefix});`
+- 1、右键文件查看文件属性
+- 2、svg图右键预览功能
+- 3、部分代码补全，如vue3，可导入默认结构。使用b-可生成bin-ui组件
+- 4、扩展js组件函数补全，使用bm-、bn-、blog- 可生成对应message，notice以及log内容
+- 5、扩展快捷键，alt+shift+l，可进行快速打印 `console.log('${prefix} ========>', ${prefix});`
