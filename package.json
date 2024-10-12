@@ -1,0 +1,139 @@
+{
+  "name": "bin-vsc-helper",
+  "displayName": "bin-vsc-helper",
+  "description": "帮助类vscode插件，提供一些方便快速的小功能",
+  "version": "0.0.1",
+  "keywords": [
+    "vscode",
+    "plugin",
+    "demo"
+  ],
+  "publisher": "wangbin",
+  "engines": {
+    "vscode": "^1.94.0"
+  },
+  "license": "MIT",
+  "pricing": "Free",
+  "private": false,
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./dist/main.js",
+  "icon": "./resources/icon.png",
+  "contributes": {
+    "commands": [
+      {
+        "command": "vsc.file-status",
+        "title": "查看文件状态"
+      },
+      {
+        "command": "vsc.preview-svg",
+        "title": "预览SVG"
+      },
+      {
+        "command": "vsc.quick-log",
+        "title": "快速log"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "bin-vsc-helper.menulist",
+        "label": "Bin VSC Helper"
+      },
+      {
+        "id": "bin-vsc-helper.menulist-editor",
+        "label": "Bin VSC Helper"
+      }
+    ],
+    "menus": {
+      "bin-vsc-helper.menulist": [
+        {
+          "command": "vsc.file-status"
+        },
+        {
+          "command": "vsc.preview-svg",
+          "when": "resourceExtname == '.svg'"
+        }
+      ],
+      "bin-vsc-helper.menulist-editor": [
+        {
+          "command": "vsc.preview-svg",
+          "when": "resourceExtname == '.svg'"
+        },
+        {
+          "command": "vsc.quick-log",
+          "when": "editorTextFocus"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "vsc.preview-svg",
+          "when": "resourceExtname == '.svg'",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "submenu": "bin-vsc-helper.menulist-editor",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "submenu": "bin-vsc-helper.menulist",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "vsc.quick-log",
+        "key": "alt+shift+l"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "vue",
+        "path": "./snippets/vue3.json"
+      },
+      {
+        "language": "html",
+        "path": "./snippets/html.json"
+      },
+      {
+        "language": "javascript",
+        "path": "./snippets/javascript.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run package",
+    "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
+    "package:visx": "pnpm vsce package --no-dependencies",
+    "publish": "pnpm vsce publish --no-dependencies",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.94.0",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
+    "eslint": "^9.9.1",
+    "esbuild": "^0.23.1",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.5.4",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}

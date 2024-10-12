@@ -1,0 +1,22 @@
+{
+  "Button 按钮": {
+    "prefix": "b-button",
+    "body": "<b-button type=\"primary\">$1</b-button>",
+    "description": "Button 按钮"
+  },
+  "Modal 弹窗": {
+    "prefix": "b-modal",
+    "body": [
+      "<b-modal v-model=\"visible\" title=\"弹窗标题\">",
+      "  <div>",
+      "    弹窗内容",
+      "  </div>",
+      "  <template>",
+      "    <b-button>取 消</b-button>",
+      "    <b-button type=\"primary\">确 定</b-button>",
+      "  </template>",
+      "</b-modal>"
+    ],
+    "description": "Modal 弹窗"
+  }
+}

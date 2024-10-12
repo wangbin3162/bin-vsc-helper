@@ -1,0 +1,91 @@
+{
+  "Message 消息": {
+    "prefix": "bm-info",
+    "body": "Message.info($1)",
+    "description": "组件库 - Message 消息组件"
+  },
+  "Message 成功消息": {
+    "prefix": "bm-success",
+    "body": "Message.success($1)",
+    "description": "组件库 - 成功消息"
+  },
+  "Message 警告消息": {
+    "prefix": "bm-waring",
+    "body": "Message.waring($1)",
+    "description": "组件库 - 警告消息"
+  },
+  "Message 错误消息": {
+    "prefix": "bm-error",
+    "body": "\\Message.error($1)",
+    "description": "组件库 - 错误消息"
+  },
+  "Alert 弹窗": {
+    "prefix": "bms-alert",
+    "body": [
+      "MessageBox.alert({",
+      "  type: 'error',",
+      "  title: '标题',",
+      "  message: '我是弹窗内容',",
+      "})"
+    ],
+    "description": "Alert 弹窗"
+  },
+  "Confirm 弹窗": {
+    "prefix": "bms-confirm",
+    "body": [
+      "MessageBox.confirm({",
+      "  type: 'warning',",
+      "  title: '提示',",
+      "  message: '确认当前操作吗？',",
+      "})",
+      "  .then(() => {$1})",
+      "  .catch(() => {$2})"
+    ],
+    "description": "Confirm 弹窗"
+  },
+  "Notice 通知": {
+    "prefix": "bn-info",
+    "body": ["Notice.info({", "  title: 'Notice 标题',", "  message: '这是通知内容',", "})"],
+    "description": "Notice 通知"
+  },
+  "Notice 成功通知": {
+    "prefix": "bn-success",
+    "body": ["Notice.success({", "  title: 'Notice 标题',", "  message: '这是通知内容',", "})"],
+    "description": "组件库 - 成功通知"
+  },
+  "Notice 警告通知": {
+    "prefix": "bn-warning",
+    "body": ["Notice.warning({", "  title: 'Notice 标题',", "  message: '这是通知内容',", "})"],
+    "description": "Notice 警告通知"
+  },
+  "Notice 错误通知": {
+    "prefix": "bn-error",
+    "body": ["Notice.error({", "  title: 'Notice 标题',", "  message: '这是通知内容',", "})"],
+    "description": "Notice 错误通知"
+  },
+  "log line": {
+    "prefix": "blog-line",
+    "body": ["console.log('%c --------------------------------------------', 'color: #1089ff;')"],
+    "description": "打印日志分割线"
+  },
+  "log info": {
+    "prefix": "blog-info",
+    "body": ["console.log(`%c ${$1} `, `color: #1089ff;`)"],
+    "description": "打印日志格式"
+  },
+  "log success": {
+    "prefix": "blog-success",
+    "body": ["console.log(`%c ${$1} `, `color: #52c41a;`)"],
+    "description": "打印日志格式"
+  },
+  "log warning": {
+    "prefix": "blog-warning",
+    "body": ["console.log(`%c ${$1} `, `color: #fa8c16;`)"],
+    "description": "打印日志格式"
+  },
+  "log error": {
+    "prefix": "blog-error",
+    "body": ["console.log(`%c ${$1} `, `color: #f5222d;`)"],
+    "description": "打印日志格式"
+  }
+}
