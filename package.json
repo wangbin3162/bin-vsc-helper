@@ -18,9 +18,13 @@
   "categories": [
     "Other"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangbin3162/bin-vsc-helper.git"
+  },
   "activationEvents": [],
   "main": "./dist/main.js",
-  "icon": "./resources/icon.png",
+  "icon": "./resources/logo.png",
   "contributes": {
     "commands": [
       {
