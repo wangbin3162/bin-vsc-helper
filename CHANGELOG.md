@@ -8,6 +8,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - 帮助类插件，主要结合基础组件库bin-ui-desin，以及vue3生态使用
 
+## [0.0.2] - 2024-10-16
+
+- 1、增加图片背景扩展
+
 ## [0.0.1] - 2024-10-12
 
 - 1、右键文件查看文件属性

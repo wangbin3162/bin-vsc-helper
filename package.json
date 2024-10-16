@@ -2,7 +2,7 @@
   "name": "bin-vsc-helper",
   "displayName": "bin-vsc-helper",
   "description": "帮助类vscode插件，提供一些方便快速的小功能",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "keywords": [
     "vscode",
     "plugin",
@@ -22,9 +22,14 @@
     "type": "git",
     "url": "https://github.com/wangbin3162/bin-vsc-helper.git"
   },
-  "activationEvents": [],
-  "main": "./dist/main.js",
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./dist/extension.js",
   "icon": "./resources/logo.png",
+  "extensionKind": [
+    "ui"
+  ],
   "contributes": {
     "commands": [
       {
@@ -38,6 +43,14 @@
       {
         "command": "vsc.quick-log",
         "title": "快速log"
+      },
+      {
+        "command": "vsc.bg.start",
+        "title": "bg - start"
+      },
+      {
+        "command": "vsc.bg.refresh",
+        "title": "backgroundCover - refresh"
       }
     ],
     "submenus": [
@@ -94,8 +107,49 @@
       {
         "command": "vsc.quick-log",
         "key": "alt+shift+l"
+      },
+      {
+        "command": "vsc.bg.refresh",
+        "key": "ctrl+shift+f7"
       }
     ],
+    "configuration": {
+      "title": "背景配置",
+      "properties": {
+        "binBgConfig.opacity": {
+          "type": "number",
+          "maximum": 1,
+          "minimum": 0,
+          "default": 0.2,
+          "description": "Background opacity (0 - 1) / 背景透明度(0 - 1)"
+        },
+        "binBgConfig.imagePath": {
+          "type": "string",
+          "default": "",
+          "description": "Background image path / 背景图片路径"
+        },
+        "binBgConfig.randomImageFolder": {
+          "type": "string",
+          "default": "",
+          "description": "Background image's folder path for random / 图片目录"
+        },
+        "binBgConfig.autoStatus": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically change background each time you start / 每次启动时随机自动更换背景"
+        },
+        "binBgConfig.sizeModel": {
+          "type": "string",
+          "default": "cover",
+          "description": "Background image size adaptive mode / 图片尺寸适应模式"
+        },
+        "binBgConfig.defaultOnlinePage": {
+          "type": "string",
+          "default": "https://vs.20988.xyz/d/24-vscodebei-jing-tu-tu-ku",
+          "description": "Online images default page / 在线图库默认页面"
+        }
+      }
+    },
     "snippets": [
       {
         "language": "vue",
