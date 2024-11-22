@@ -18,8 +18,8 @@ const vsHelp = {
    * @param {any} content 提示内容
    * @returns {Thenable<void>}
    */
-  async showInfoRestart(content: any): Thenable<void> {
-    return await window.showInformationMessage(content, { title: 'Reload' }).then(async item => {
+  showInfoRestart(content: any): Thenable<void> {
+    return window.showInformationMessage(content, { title: 'Reload' }).then(async item => {
       if (!item) {
         return
       }
