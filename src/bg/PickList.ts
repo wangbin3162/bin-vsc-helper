@@ -16,6 +16,8 @@ import {
   ConfigurationTarget,
   InputBoxOptions,
 } from 'vscode'
+import bleandHelper from './bleandHelper'
+import { getContext } from './global'
 
 export class PickList {
   public static itemList: PickList | undefined
@@ -43,6 +45,7 @@ export class PickList {
     this.opacity = config.opacity
     this.sizeModel = config.sizeModel || 'cover'
     this.imageFileType = 0
+    this.blur = config.blur
 
     switch (os.type()) {
       case 'Windows_NT':
@@ -99,6 +102,36 @@ export class PickList {
     PickList.itemList.autoUpdateBackground()
     // 将PickList.itemList设置为undefined
     return (PickList.itemList = undefined)
+  }
+
+  /**
+   *  自动更新背景
+   */
+  public static autoUpdateBlendModel(autoKind: ColorThemeKind) {
+    let config: WorkspaceConfiguration = this.getConfig()
+    //是否存在背景图片
+    if (config.imagePath === '') {
+      return
+    }
+
+    let context = getContext()
+    let blendStr = context.globalState.get('binBgBlendModel')
+    let nowBlenaStr = bleandHelper.autoBlendModel()
+    if (blendStr === nowBlenaStr) {
+      return false
+    }
+
+    // 弹出提示框确认是否重启
+    window
+      .showInformationMessage('主题模式发生变更，是否更新背景混合模式？', 'YES', 'NO')
+      .then(value => {
+        if (value === 'YES') {
+          PickList.itemList = new PickList(config)
+          PickList.itemList.updateDom(false, nowBlenaStr as string).then(() => {
+            commands.executeCommand('workbench.action.reloadWindow')
+          })
+        }
+      })
   }
 
   /**
@@ -408,15 +441,26 @@ export class PickList {
 
   // 5/6. 创建一个输入框
   private showInputBox(type: number) {
-    if (type <= 0 || type > 2) {
+    if (type <= 0 || type > 3) {
       return false
     }
 
-    let placeString =
-      type === 2
-        ? 'Opacity ranges：0.00 - 1,current:(' + this.opacity + ')'
-        : 'Please enter the image path to support local and HTTPS'
-    let promptString = type === 2 ? '设置图片不透明度：0-1' : '请输入图片路径，支持本地及https'
+    let placeStringArr: string[] = [
+      '',
+      'Please enter the image path to support local and HTTPS',
+      'Opacity ranges：0.00 - 1,current:(' + this.opacity + ')',
+      'Set image blur: 0-100',
+    ]
+
+    let promptStringArr: string[] = [
+      '',
+      '请输入图片路径，支持本地及https',
+      '设置图片不透明度：0 - 0.8',
+      '设置图片模糊度：0 - 100',
+    ]
+
+    let placeString = placeStringArr[type]
+    let promptString = promptStringArr[type]
 
     let option: InputBoxOptions = {
       ignoreFocusOut: true,
@@ -441,20 +485,27 @@ export class PickList {
           )
           return false
         }
-      } else {
+      } else if (type === 2) {
         let isOpacity = parseFloat(value)
 
-        if (isOpacity < 0 || isOpacity > 1 || isNaN(isOpacity)) {
-          window.showWarningMessage('Opacity ranges in：0 - 1！')
+        if (isOpacity < 0 || isOpacity > 0.8 || isNaN(isOpacity)) {
+          window.showWarningMessage('Opacity ranges in：0 - 0.8！')
+          return false
+        }
+      } else if (type === 3) {
+        let blur = parseFloat(value)
+
+        if (blur < 0 || blur > 100 || isNaN(blur)) {
+          window.showWarningMessage('Blur ranges in：0 - 100！')
           return false
         }
       }
 
-      this.setConfigValue(
-        type === 1 ? 'imagePath' : 'opacity',
-        type === 1 ? value : parseFloat(value),
-        true,
-      )
+      // set配置
+      let keyArr = ['', 'imagePath', 'opacity', 'blur']
+      let setKey = keyArr[type]
+
+      this.setConfigValue(setKey, type === 1 ? value : parseFloat(value), true)
     })
   }
 
@@ -550,6 +601,9 @@ export class PickList {
       case 'sizeModel':
         this.sizeModel = value
         break
+      case 'blur':
+        this.blur = value
+        break
       default:
         break
     }
@@ -561,53 +615,56 @@ export class PickList {
   }
 
   // 更新、卸载css
-  private updateDom(uninstall: boolean = false) {
-    // console.log(this.imgPath, this.opacity, this.sizeModel)
-    // console.log('--------------------------------------------')
-    let dom: FileDom = new FileDom(this.imgPath, this.opacity, this.sizeModel)
-
-    let result = false
-    if (uninstall) {
-      result = dom.uninstall()
-    } else {
-      if (this.osType === 1) {
-        result = dom.install()
-      } else if (this.osType === 2) {
-        result = dom.installMac()
-      } else if (this.osType === 3) {
-        result = dom.install() // 暂未做对应处理
-      }
+  private async updateDom(uninstall: boolean = false, colorThemeKind: string = ''): Promise<void> {
+    // 自动修改混合模式
+    if (colorThemeKind === '') {
+      colorThemeKind = bleandHelper.autoBlendModel()
     }
-    if (result) {
-      if (this.quickPick) {
-        this.quickPick.placeholder = 'Reloading takes effect? / 重新加载生效？'
-        this.quickPick.items = [
-          {
-            label: '$(check)   YES',
-            description: '立即重新加载窗口生效',
-            imageType: 8,
-          },
-          { label: '$(x)   NO', description: '稍后手动重启', imageType: 9 },
-        ]
-        this.quickPick.ignoreFocusOut = true
-        this.quickPick.show()
+    let context = getContext()
+    context.globalState.update('binBgBlendModel', colorThemeKind)
+
+    // 写入文件
+    const dom = new FileDom(this.imgPath, this.opacity, this.sizeModel, this.blur, colorThemeKind)
+    let result = false
+
+    try {
+      if (uninstall) {
+        this.config.update('imagePath', '', ConfigurationTarget.Global)
+        result = await dom.uninstall()
       } else {
-        // 通过在线图库更新提示弹窗
-        if (this.imageFileType === 2) {
-          // 弹出提示框确认是否重启
-          window
-            .showInformationMessage(
-              '"' + this.imgPath + '"' + ' | Reloading takes effect? / 重新加载生效？',
+        result = await dom.install()
+      }
+
+      if (result) {
+        if (this.quickPick) {
+          this.quickPick.placeholder = 'Reloading takes effect? / 重新加载生效？'
+          this.quickPick.items = [
+            {
+              label: '$(check)   YES',
+              description: '立即重新加载窗口生效',
+              imageType: 8,
+            },
+            { label: '$(x)   NO', description: '稍后手动重启', imageType: 9 },
+          ]
+          this.quickPick.ignoreFocusOut = true
+          this.quickPick.show()
+        } else {
+          // 通过在线图库更新提示弹窗
+          if (this.imageFileType === 2) {
+            // 弹出提示框确认是否重启
+            const value = await window.showInformationMessage(
+              `"${this.imgPath}" | Reloading takes effect? / 重新加载生效？`,
               'YES',
               'NO',
             )
-            .then(value => {
-              if (value === 'YES') {
-                vsHelp.reloadWindow()
-              }
-            })
+            if (value === 'YES') {
+              await vsHelp.reloadWindow()
+            }
+          }
         }
       }
+    } catch (error: any) {
+      await window.showErrorMessage(`更新失败: ${error.message}`)
     }
   }
 

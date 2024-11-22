@@ -18,20 +18,20 @@ const vsHelp = {
    * @param {any} content 提示内容
    * @returns {Thenable<void>}
    */
-  showInfoRestart(content: any): Thenable<void> {
-    return window.showInformationMessage(content, { title: 'Reload' }).then(function (item) {
+  async showInfoRestart(content: any): Thenable<void> {
+    return await window.showInformationMessage(content, { title: 'Reload' }).then(async item => {
       if (!item) {
         return
       }
-      commands.executeCommand('workbench.action.reloadWindow')
+      await commands.executeCommand('workbench.action.reloadWindow')
     })
   },
 
   /**
    *
    */
-  reloadWindow() {
-    commands.executeCommand('workbench.action.reloadWindow')
+  async reloadWindow() {
+    await commands.executeCommand('workbench.action.reloadWindow')
   },
 
   /**

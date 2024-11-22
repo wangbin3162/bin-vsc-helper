@@ -24,6 +24,10 @@ function main(context: ExtensionContext) {
   context.subscriptions.push(startCommand)
   context.subscriptions.push(randomCommand)
 
+  // 监听主题变化
+  window.onDidChangeActiveColorTheme(event => {
+    PickList.autoUpdateBlendModel(event.kind)
+  })
   // webview
   // const readerViewProvider = new ReaderViewProvider()
   // window.registerWebviewViewProvider('vsc.bg.readerView', readerViewProvider, {
